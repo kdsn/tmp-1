@@ -1,0 +1,92 @@
+<script>
+    // setCookie bruges af setCookieData, til at indsætte data i cookies.
+    function setCookie(cname, cvalue, exdays) {
+        const d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        let expires = "expires="+ d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+    // setCookieData bliver kaldt af formularen ved klik på submit
+    function setCookieData() {
+        // "sporingsform" skal matche ID på formularen
+        var elements = document.getElementById("sporingsform").elements;
+
+        for (var i = 0, element; element = elements[i++];) {
+            setCookie(element.id, element.value, 11);
+        }
+    }
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i <ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    // getCookieData bliver kaldt af cookiedata div'en onload
+    function getCookieData() {
+        let content = '<table><tr><th style="width: 200px;">Status</th><th style="width: 200px;">Name</th><th style="width: 200px;">Phone</th></tr>';
+        content = content + '<tr><td>Infected name</td><td>' + getCookie('infectedName') + '</td><td>' + getCookie('infectedPhone') + '</td><tr>';
+        content = content + '<tr><td>Contact 1 name</td><td>' + getCookie('contact1Name') + '</td><td>' + getCookie('contact1Phone') + '</td><tr>';
+        content = content + '<tr><td>Contact 2 name</td><td>' + getCookie('contact2Name') + '</td><td>' + getCookie('contact2Phone') + '</td><tr>';
+        content = content + '</table>'
+        document.getElementById("cookiedata").innerHTML = content;
+    }
+</script>
+<body onload="getCookieData()">
+
+
+
+
+<!-- nedenstående overskrives af funktionen getCookieData, når siden er loadet -->
+<div id="cookiedata">ost</div>
+
+
+<div class="col-6 offset-3">
+
+<form action="/sporing" method="post" id="sporingsform">
+    <div class="row">
+        <div class="mb-3 col-8">
+            <label for="infectedName" class="form-label">Infected name</label>
+            <input type="text" class="form-control" id="infectedName">
+        </div>
+        <div class="mb-3 col-4">
+            <label for="infectedPhone" class="form-label">Phone</label>
+            <input type="tel" class="form-control" id="infectedPhone">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="mb-3 col-8">
+            <label for="contact1Name" class="form-label">Contact 1 name</label>
+            <input type="text" class="form-control" id="contact1Name">
+        </div>
+        <div class="mb-3 col-4">
+            <label for="contact1Phone" class="form-label">Phone</label>
+            <input type="tel" class="form-control" id="contact1Phone">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="mb-3 col-8">
+            <label for="contact2Name" class="form-label">Contact 2 name</label>
+            <input type="text" class="form-control" id="contact2Name">
+        </div>
+        <div class="mb-3 col-4">
+            <label for="contact2Phone" class="form-label">Phone</label>
+            <input type="tel" class="form-control" id="contact2Phone">
+        </div>
+    </div>
+
+    <input type="submit" value="Indsend" onclick="setCookieData()"class="btn btn-primary">
+</form>
+
+</div>
